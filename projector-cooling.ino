@@ -1,7 +1,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define TEMPERATURE_SENSOR_BUS 2 //(Connect to Pin 1)
+#define TEMPERATURE_SENSOR_BUS 2 //(Connect to Pin 2)
 #define FAN_PWM_BUS 3 //(Connect to Pin 3)
 #define MALFUNCTION_LED_BUS 5 //(Connect to Pin 5)
 double temperature = 0.0d;
@@ -16,7 +16,7 @@ void setup() {
   pinMode(FAN_PWM_BUS, OUTPUT);
   pinMode(MALFUNCTION_LED_BUS, OUTPUT);
   Serial.begin(9600);
-  Serial.println("YourDuino.com: Temperature Sensor Test Program");
+  Serial.println("Program - Projector Cooling");
   Serial.println("Temperature Sensor: DS18B20");
   sensors.begin();
 }
