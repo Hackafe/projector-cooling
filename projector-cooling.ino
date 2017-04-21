@@ -4,10 +4,20 @@
 #define TEMPERATURE_SENSOR_BUS 2 //(Connect to Pin 2)
 #define FAN_PWM_BUS 3 //(Connect to Pin 3)
 #define MALFUNCTION_LED_BUS 5 //(Connect to Pin 5)
+#define TEMPERATURE_SENSOR_INDEX 0 // Index of sensors connected to data pin, default: 0.
+#define TEMPERATURE_SENSOR_RESOLUTION 9 // How many bits to use for temperature values: 9, 10, 11 or 12. Lower resolution means faster measurements.
 double temperature = 0.0d;
+
+/*
+9 bits: increments of 0.5C, 93.75ms to measure temperature;
+10 bits: increments of 0.25C, 187.5ms to measure temperature;
+11 bits: increments of 0.125C, 375ms to measure temperature;
+12 bits: increments of 0.0625C, 750ms to measure temperature.
+*/
 
 OneWire signalWire(TEMPERATURE_SENSOR_BUS); //Set up a oneWire instance to communicate with any OneWire device
 DallasTemperature sensors(&signalWire); //Tell Dallas Temperature Library to use oneWire Library 
+DeviceAddress sensorDeviceAddress;
 
 void activateMalfunctionLED();
 
@@ -16,19 +26,21 @@ void setup() {
   pinMode(FAN_PWM_BUS, OUTPUT);
   pinMode(MALFUNCTION_LED_BUS, OUTPUT);
   Serial.begin(9600);
+  Serial.println();
   Serial.println("Program - Projector Cooling");
   Serial.println("Temperature Sensor: DS18B20");
   sensors.begin();
+  sensors.getAddress(sensorDeviceAddress, 0);
+  sensors.setResolution(sensorDeviceAddress, TEMPERATURE_SENSOR_RESOLUTION);
 }
-
 
 void loop() {
   Serial.println();
   Serial.print("Requesting temperature...");
-  sensors.requestTemperatures(); // Send the command to get temperatures
+  sensors.requestTemperatures(); // Send the command to get temperatures. Measurement may take up to 750ms.
   Serial.println("Done");
   
-  temperature = sensors.getTempCByIndex(0);
+  temperature = sensors.getTempCByIndex(TEMPERATURE_SENSOR_INDEX);
   
   Serial.print("Sensor 1 (at index 0) = ");
   Serial.print(temperature);
