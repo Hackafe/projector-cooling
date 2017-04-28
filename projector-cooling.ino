@@ -5,7 +5,7 @@
 #define FAN_PWM_BUS 3 //(Connect to Pin 3)
 #define MALFUNCTION_LED_BUS 5 //(Connect to Pin 5)
 #define TEMPERATURE_SENSOR_INDEX 0 // Index of sensors connected to data pin, default: 0.
-#define TEMPERATURE_SENSOR_RESOLUTION 9 // How many bits to use for temperature values: 9, 10, 11 or 12. Lower resolution means faster measurements.
+#define TEMPERATURE_SENSOR_RESOLUTION 12 // How many bits to use for temperature values: 9, 10, 11 or 12. Lower resolution means faster measurements.
 double temperature = 0.0d;
 
 /*
@@ -16,7 +16,7 @@ double temperature = 0.0d;
 */
 
 OneWire signalWire(TEMPERATURE_SENSOR_BUS); //Set up a oneWire instance to communicate with any OneWire device
-DallasTemperature sensors(&signalWire); //Tell Dallas Temperature Library to use oneWire Library 
+DallasTemperature sensor(&signalWire); //Tell Dallas Temperature Library to use oneWire Library 
 DeviceAddress sensorDeviceAddress;
 
 void activateMalfunctionLED();
@@ -29,18 +29,19 @@ void setup() {
   Serial.println();
   Serial.println("Program - Projector Cooling");
   Serial.println("Temperature Sensor: DS18B20");
-  sensors.begin();
-  sensors.getAddress(sensorDeviceAddress, 0);
-  sensors.setResolution(sensorDeviceAddress, TEMPERATURE_SENSOR_RESOLUTION);
+  sensor.begin();
+  sensor.getAddress(sensorDeviceAddress, TEMPERATURE_SENSOR_INDEX);
+  sensor.setResolution(sensorDeviceAddress, TEMPERATURE_SENSOR_RESOLUTION);
 }
 
 void loop() {
   Serial.println();
   Serial.print("Requesting temperature...");
-  sensors.requestTemperatures(); // Send the command to get temperatures. Measurement may take up to 750ms.
+  sensor.requestTemperatures(); // Send the command to get temperatures. Measurement may take up to 750ms.
+  //sensor.requestTemperaturesByAddress(sensorDeviceAddress);
   Serial.println("Done");
   
-  temperature = sensors.getTempCByIndex(TEMPERATURE_SENSOR_INDEX);
+  temperature = sensor.getTempCByIndex(TEMPERATURE_SENSOR_INDEX);
   
   Serial.print("Sensor 1 (at index 0) = ");
   Serial.print(temperature);
@@ -51,8 +52,10 @@ void loop() {
   Serial.print(sensors.getTempFByIndex(0));
   Serial.println(" Degrees Fahrenheit");
   */
+
+  //sensor.hasAlarm();
   
-  if (temperature != -127.00) {
+  if (sensor.isConnected(sensorDeviceAddress) && temperature != -127.00) {
     if (temperature <= 20.00) {
       analogWrite(FAN_PWM_BUS, 80);
     } else if (temperature <= 22.00) {
@@ -74,7 +77,7 @@ void loop() {
     }   
   } else {
     Serial.println("Warning! Sensor malfunction.");
-    Serial.println("Possible reasons: no sensor connected, failed sensor, overheating, etc.");
+    Serial.println("Possible reasons: no sensor connected, failed sensor, pull-up resistor fail, overheating, etc.");
     Serial.println("To prevent damage from overheating the fans now run at full speed.");
     analogWrite(FAN_PWM_BUS, 255);
     activateMalfunctionLED();
