@@ -2,8 +2,8 @@
 #include <DallasTemperature.h>
 
 #define TEMPERATURE_SENSOR_BUS 2 //(Connect to Pin 2)
-#define FAN_PWM_BUS 3 //(Connect to Pin 3)
-#define MALFUNCTION_LED_BUS 5 //(Connect to Pin 5)
+#define FAN_PWM_BUS 5 //(Connect to Pin 5)
+#define MALFUNCTION_LED_BUS 9 //(Connect to Pin 9)
 #define TEMPERATURE_SENSOR_INDEX 0 // Index of sensors connected to data pin, default: 0.
 #define TEMPERATURE_SENSOR_RESOLUTION 12 // How many bits to use for temperature values: 9, 10, 11 or 12. Lower resolution means faster measurements.
 double temperature = 0.0d;
@@ -81,6 +81,8 @@ void loop() {
     Serial.println("To prevent damage from overheating the fans now run at full speed.");
     analogWrite(FAN_PWM_BUS, 255);
     activateMalfunctionLED();
+    sensor.getAddress(sensorDeviceAddress, TEMPERATURE_SENSOR_INDEX);
+    sensor.setResolution(sensorDeviceAddress, TEMPERATURE_SENSOR_RESOLUTION);
   }
 }
 
