@@ -56,25 +56,19 @@ void loop() {
   //sensor.hasAlarm();
   
   if (sensor.isConnected(sensorDeviceAddress) && temperature != -127.00) {
-    if (temperature <= 20.00) {
-      analogWrite(FAN_PWM_BUS, 80);
-    } else if (temperature <= 22.00) {
-      analogWrite(FAN_PWM_BUS, 130);
-    } else if (temperature <= 24.00) {
-      analogWrite(FAN_PWM_BUS, 150);
-    } else if (temperature <= 26.00) {
-      analogWrite(FAN_PWM_BUS, 180);
-    } else if (temperature <= 28.00) {
-      analogWrite(FAN_PWM_BUS, 210);
-    } else if (temperature <= 30.00) {
+    if (temperature <= 40.00) {
+      analogWrite(FAN_PWM_BUS, 55);
+    } else if (temperature <= 45.00) {
+      analogWrite(FAN_PWM_BUS, 87);
+    } else if (temperature <= 50.00) {
+      analogWrite(FAN_PWM_BUS, 129);
+    } else if (temperature <= 55.00) {
+      analogWrite(FAN_PWM_BUS, 171);
+    } else if (temperature <= 60.00) {
+      analogWrite(FAN_PWM_BUS, 213);
+    } else if (temperature <= 65.00) {
       analogWrite(FAN_PWM_BUS, 255);
-    } else if (temperature <= 32.00) {
-      analogWrite(FAN_PWM_BUS, 255);
-    } else if (temperature <= 33.00) {
-      analogWrite(FAN_PWM_BUS, 255);
-    } else if (temperature <= 35.00) {
-      analogWrite(FAN_PWM_BUS, 255);
-    }   
+    }
   } else {
     Serial.println("Warning! Sensor malfunction.");
     Serial.println("Possible reasons: no sensor connected, failed sensor, pull-up resistor fail, overheating, etc.");
