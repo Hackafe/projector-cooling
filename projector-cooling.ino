@@ -17,7 +17,7 @@ double temperature = 0.0d;
 
 OneWire signalWire(TEMPERATURE_SENSOR_BUS); //Set up a oneWire instance to communicate with any OneWire device
 DallasTemperature sensor(&signalWire); //Tell Dallas Temperature Library to use oneWire Library 
-DeviceAddress sensorDeviceAddress;
+DeviceAddress sensorDeviceAddress; //Sensor address
 
 void activateMalfunctionLED();
 
